@@ -66,7 +66,7 @@ import {
 } from 'vue'
 import ElButton from '@element-plus/components/button'
 import ElIcon from '@element-plus/components/icon'
-import { elFormItemKey } from '@element-plus/tokens'
+import { formItemContextKey } from '@element-plus/tokens'
 import { useLocale } from '@element-plus/hooks'
 import { UPDATE_MODEL_EVENT } from '@element-plus/utils/constants'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
@@ -81,7 +81,7 @@ import { useMove } from './useMove'
 import { CHANGE_EVENT } from './transfer'
 
 import type { PropType, VNode } from 'vue'
-import type { ElFormItemContext } from '@element-plus/tokens'
+import type { FormItemContext } from '@element-plus/tokens'
 import type { DataItem, Format, Key, Props, TargetOrder } from './transfer'
 
 export default defineComponent({
@@ -162,7 +162,7 @@ export default defineComponent({
 
   setup(props, { emit, slots }) {
     const { t } = useLocale()
-    const elFormItem = inject(elFormItemKey, {} as ElFormItemContext)
+    const elFormItem = inject(formItemContextKey, {} as FormItemContext)
 
     const checkedState = reactive({
       leftChecked: [],

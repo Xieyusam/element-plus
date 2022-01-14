@@ -14,11 +14,10 @@ import {
   addResizeListener,
   removeResizeListener,
 } from '@element-plus/utils/resize-event'
-import { elFormItemKey, elFormKey } from '@element-plus/tokens'
+import { formItemContextKey, formContextKey } from '@element-plus/tokens'
 import type { ResizableElement } from '@element-plus/utils/resize-event'
 
 import type { CSSProperties } from 'vue'
-import type { Nullable } from '@element-plus/utils/types'
 
 export default defineComponent({
   name: 'ElLabelWrap',
@@ -27,15 +26,16 @@ export default defineComponent({
     updateAll: Boolean,
   },
   setup(props, { slots }) {
-    const el = ref<Nullable<HTMLElement>>(null)
-    const elForm = inject(elFormKey)
-    const elFormItem = inject(elFormItemKey)
+    const formContext = inject(formContextKey)
+    const formItemContext = inject(formItemContextKey)
 
+    const el = ref<HTMLElement>()
     const computedWidth = ref(0)
+
     watch(computedWidth, (val, oldVal) => {
       if (props.updateAll) {
-        elForm.registerLabelWidth(val, oldVal)
-        elFormItem.updateComputedLabelWidth(val)
+        formContext?.registerLabelWidth(val, oldVal)
+        formItemContext?.updateComputedLabelWidth(val)
       }
     })
 
@@ -47,13 +47,14 @@ export default defineComponent({
         return 0
       }
     }
+
     const updateLabelWidth = (action = 'update') => {
       nextTick(() => {
         if (slots.default && props.isAutoWidth) {
           if (action === 'update') {
             computedWidth.value = getLabelWidth()
           } else if (action === 'remove') {
-            elForm.deregisterLabelWidth(computedWidth.value)
+            formContext?.deregisterLabelWidth(computedWidth.value)
           }
         }
       })
@@ -62,7 +63,7 @@ export default defineComponent({
 
     onMounted(() => {
       addResizeListener(
-        el.value.firstElementChild as ResizableElement,
+        el.value!.firstElementChild as ResizableElement,
         updateLabelWidthFn
       )
       updateLabelWidthFn()
@@ -78,10 +79,10 @@ export default defineComponent({
       )
     })
 
-    function render() {
+    return () => {
       if (!slots) return null
       if (props.isAutoWidth) {
-        const autoLabelWidth = elForm.autoLabelWidth
+        const autoLabelWidth = formContext?.autoLabelWidth
         const style = {} as CSSProperties
         if (autoLabelWidth && autoLabelWidth !== 'auto') {
           const marginWidth = Math.max(
@@ -89,7 +90,7 @@ export default defineComponent({
             parseInt(autoLabelWidth, 10) - computedWidth.value
           )
           const marginPosition =
-            elForm.labelPosition === 'left' ? 'marginRight' : 'marginLeft'
+            formContext.labelPosition === 'left' ? 'marginRight' : 'marginLeft'
           if (marginWidth) {
             style[marginPosition] = `${marginWidth}px`
           }
@@ -107,7 +108,5 @@ export default defineComponent({
         return h(Fragment, { ref: el }, slots.default?.())
       }
     }
-
-    return render
   },
 })

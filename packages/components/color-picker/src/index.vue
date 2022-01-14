@@ -111,7 +111,7 @@ import debounce from 'lodash/debounce'
 import ElButton from '@element-plus/components/button'
 import ElIcon from '@element-plus/components/icon'
 import { ClickOutside } from '@element-plus/directives'
-import { elFormItemKey, elFormKey } from '@element-plus/tokens'
+import { formItemContextKey, formContextKey } from '@element-plus/tokens'
 import { useLocale, useSize } from '@element-plus/hooks'
 import ElTooltip from '@element-plus/components/tooltip'
 import ElInput from '@element-plus/components/input'
@@ -126,7 +126,7 @@ import Color from './color'
 import { OPTIONS_KEY } from './useOption'
 
 import type { PropType } from 'vue'
-import type { ElFormContext, ElFormItemContext } from '@element-plus/tokens'
+import type { FormContext, FormItemContext } from '@element-plus/tokens'
 import type { ComponentSize } from '@element-plus/utils/types'
 import type { IUseOptions } from './useOption'
 
@@ -162,8 +162,8 @@ export default defineComponent({
   emits: ['change', 'active-change', UPDATE_MODEL_EVENT],
   setup(props, { emit }) {
     const { t } = useLocale()
-    const elForm = inject(elFormKey, {} as ElFormContext)
-    const elFormItem = inject(elFormItemKey, {} as ElFormItemContext)
+    const elForm = inject(formContextKey, {} as FormContext)
+    const elFormItem = inject(formItemContextKey, {} as FormItemContext)
 
     const hue = ref(null)
     const svPanel = ref(null)

@@ -1,47 +1,38 @@
-import type { InjectionKey } from 'vue'
-import type { ValidateFieldsError } from 'async-validator'
+import type {
+  useFormLabelWidth,
+  FormProps,
+  FormEmits,
+  FormItemProps,
+  FormValidateCallback,
+} from '@element-plus/components/form'
+import type { InjectionKey, SetupContext, UnwrapRef } from 'vue'
 import type { ComponentSize } from '@element-plus/utils/types'
 
-export interface ElFormContext {
-  registerLabelWidth(width: number, oldWidth: number): void
-  deregisterLabelWidth(width: number): void
-  autoLabelWidth: string | undefined
-  emit: (evt: string, ...args: any[]) => void
-  addField: (field: ElFormItemContext) => void
-  removeField: (field: ElFormItemContext) => void
-  resetFields: () => void
-  clearValidate: (props: string | string[]) => void
-  validateField: (props: string | string[], cb: ValidateFieldCallback) => void
-  labelSuffix: string
-  inline?: boolean
-  inlineMessage?: boolean
-  model?: Record<string, unknown>
-  size?: ComponentSize
-  showMessage?: boolean
-  labelPosition?: string
-  labelWidth?: string | number
-  rules?: Record<string, unknown>
-  statusIcon?: boolean
-  hideRequiredAsterisk?: boolean
-  disabled?: boolean
-}
+export type FormContext = FormProps &
+  UnwrapRef<ReturnType<typeof useFormLabelWidth>> & {
+    emit: SetupContext<FormEmits>['emit']
 
-export interface ValidateFieldCallback {
-  (isValid?: string, invalidFields?: ValidateFieldsError): void
-}
+    // expose
+    addField: (field: FormItemContext) => void
+    removeField: (field: FormItemContext) => void
+    resetFields: () => void
+    clearValidate: (props: string | string[]) => void
+    validateField: (props: string | string[], cb: FormValidateCallback) => void
+  }
 
-export interface ElFormItemContext {
+export type FormItemContext = FormItemProps & {
+  $el: HTMLDivElement | undefined
   prop?: string
   size?: ComponentSize
   validateState: string
-  $el: HTMLDivElement
-  validate(trigger: string, callback?: ValidateFieldCallback): void
-  updateComputedLabelWidth(width: number): void
+  validate(trigger: string, callback?: FormValidateCallback): void
+  updateComputedLabelWidth(width: string | number): void
   evaluateValidationEnabled(): void
   resetField(): void
   clearValidate(): void
 }
 
-export const elFormKey: InjectionKey<ElFormContext> = Symbol('elForm')
-export const elFormItemKey: InjectionKey<ElFormItemContext> =
-  Symbol('elFormItem')
+export const formContextKey: InjectionKey<FormContext> =
+  Symbol('formContextKey')
+export const formItemContextKey: InjectionKey<FormItemContext> =
+  Symbol('formItemContextKey')
