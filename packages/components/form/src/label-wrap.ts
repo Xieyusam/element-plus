@@ -15,6 +15,7 @@ import {
   removeResizeListener,
 } from '@element-plus/utils/resize-event'
 import { formItemContextKey, formContextKey } from '@element-plus/tokens'
+import { useNamespace } from '@element-plus/hooks'
 import type { ResizableElement } from '@element-plus/utils/resize-event'
 
 import type { CSSProperties } from 'vue'
@@ -28,6 +29,7 @@ export default defineComponent({
   setup(props, { slots }) {
     const formContext = inject(formContextKey)
     const formItemContext = inject(formItemContextKey)
+    const ns = useNamespace('form')
 
     const el = ref<HTMLElement>()
     const computedWidth = ref(0)
@@ -99,7 +101,7 @@ export default defineComponent({
           'div',
           {
             ref: el,
-            class: ['el-form-item__label-wrap'],
+            class: [ns.be('item', 'label-wrap')],
             style,
           },
           slots.default?.()

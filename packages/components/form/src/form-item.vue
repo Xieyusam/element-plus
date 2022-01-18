@@ -1,5 +1,5 @@
 <template>
-  <div ref="formItemRef" class="el-form-item" :class="formItemClass">
+  <div ref="formItemRef" :class="formItemClass">
     <label-wrap
       :is-auto-width="labelStyle.width === 'auto'"
       :update-all="formContext?.labelWidth === 'auto'"
@@ -7,7 +7,7 @@
       <label
         v-if="label || $slots.label"
         :for="labelFor"
-        class="el-form-item__label"
+        :class="ns.e('label')"
         :style="labelStyle"
       >
         <slot name="label" :label="currentLabel">
@@ -15,18 +15,20 @@
         </slot>
       </label>
     </label-wrap>
-    <div class="el-form-item__content" :style="contentStyle">
+    <div :class="ns.e('content')" :style="contentStyle">
       <slot></slot>
       <transition name="el-zoom-in-top">
         <slot v-if="shouldShowError" name="error" :error="validateMessage">
           <div
-            class="el-form-item__error"
-            :class="{
-              'el-form-item__error--inline':
-                typeof inlineMessage === 'boolean'
-                  ? inlineMessage
-                  : formContext?.inlineMessage || false,
-            }"
+            :class="[
+              ns.e('error'),
+              {
+                [ns.em('error', 'inline')]:
+                  typeof inlineMessage === 'boolean'
+                    ? inlineMessage
+                    : formContext?.inlineMessage || false,
+              },
+            ]"
           >
             {{ validateMessage }}
           </div>
@@ -55,7 +57,7 @@ import { NOOP } from '@vue/shared'
 import AsyncValidator from 'async-validator'
 import { addUnit, getPropByPath } from '@element-plus/utils/util'
 import { formItemContextKey, formContextKey } from '@element-plus/tokens'
-import { useSize } from '@element-plus/hooks'
+import { useNamespace, useSize } from '@element-plus/hooks'
 import { formItemProps } from './form-item'
 import LabelWrap from './label-wrap'
 
@@ -73,8 +75,9 @@ export default defineComponent({
 
   setup(props, { slots }) {
     const vm = getCurrentInstance()!
-    const sizeClass = useSize(undefined, { formItem: false })
     const formContext = inject(formContextKey, undefined)
+    const sizeClass = useSize(undefined, { formItem: false })
+    const ns = useNamespace('form-item')
     const validateState = ref('')
     const validateMessage = ref('')
     const isValidationEnabled = ref(false)
@@ -109,15 +112,16 @@ export default defineComponent({
       return {}
     })
     const formItemClass = computed(() => [
+      ns.b(),
       {
-        'el-form-item--feedback': formContext?.statusIcon,
+        [ns.m('feedback')]: formContext?.statusIcon,
         'is-error': validateState.value === 'error',
         'is-validating': validateState.value === 'validating',
         'is-success': validateState.value === 'success',
         'is-required': isRequired.value || props.required,
         'is-no-asterisk': formContext?.hideRequiredAsterisk,
       },
-      sizeClass.value ? `el-form-item--${sizeClass.value}` : '',
+      sizeClass.value ? ns.m(sizeClass.value) : '',
     ])
     const labelFor = computed(() => props.for || props.prop)
     const isNested = computed(() => {
@@ -303,6 +307,7 @@ export default defineComponent({
     })
 
     return {
+      ns,
       formItemRef,
       formItemClass,
       shouldShowError,

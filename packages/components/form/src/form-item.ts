@@ -5,6 +5,7 @@ import {
 } from '@element-plus/utils/props'
 import type { ExtractPropTypes } from 'vue'
 import type { RuleItem } from 'async-validator'
+import type FormItem from './form-item.vue'
 
 export interface FormItemRule extends RuleItem {
   trigger?: string
@@ -40,3 +41,5 @@ export const formItemProps = buildProps({
   },
 } as const)
 export type FormItemProps = ExtractPropTypes<typeof formItemProps>
+
+export type FormItemInstance = InstanceType<typeof FormItem>

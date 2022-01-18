@@ -10,6 +10,7 @@ import type { FormItemRule } from './form-item'
 import type { FormItemContext } from '@element-plus/tokens'
 import type { ExtractPropTypes } from 'vue'
 import type { ValidateFieldsError } from 'async-validator'
+import type Form from './form.vue'
 
 export type FormRulesMap<T extends string = string> = Partial<
   Record<T, FormItemRule | FormItemRule[]>
@@ -57,6 +58,8 @@ export const formEmits = {
   validate: () => true,
 }
 export type FormEmits = typeof formEmits
+
+export type FormInstance = InstanceType<typeof Form>
 
 export type FormValidateCallback = (
   isValid?: boolean,

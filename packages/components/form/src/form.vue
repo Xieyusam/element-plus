@@ -15,7 +15,7 @@ import {
 } from 'vue'
 import { formContextKey } from '@element-plus/tokens'
 import { debugWarn } from '@element-plus/utils/error'
-import { useSize } from '@element-plus/hooks'
+import { useNamespace, useSize } from '@element-plus/hooks'
 import { useFormLabelWidth, formProps, formEmits, filterFields } from './form'
 import type { FormValidateCallback } from './form'
 import type { ValidateFieldsError } from 'async-validator'
@@ -31,14 +31,14 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const formSize = useSize()
+    const ns = useNamespace('form')
     const formKls = computed(() => {
-      const prefix = 'el-form'
       const { labelPosition, inline } = props
       return [
-        prefix,
-        `${prefix}--${formSize.value}`,
-        labelPosition ? `${prefix}--label-${labelPosition}` : '',
-        inline ? `${prefix}--inline` : '',
+        ns.b(),
+        ns.m(formSize.value),
+        labelPosition ? ns.m(`label-${labelPosition}`) : '',
+        inline ? ns.m('inline') : '',
       ]
     })
     const fields: FormItemContext[] = []
